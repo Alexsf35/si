@@ -125,7 +125,55 @@ class Dataset:
             "var": self.get_variance()
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
+    
+    def dropna(self) -> None:
+        """
+        Removes all samples containing at least one null value (NaN)
+        """
+        null_samples_i=[]
 
+        for i in range(len(self.X)):
+            if np.any(np.isnan(self.X[i])):
+                null_samples_i.append(i)
+
+        self.X = np.delete(self.X, null_samples_i,0)
+        if self.y is not None:
+            self.y = np.delete(self.y, null_samples_i,0)
+        
+        return self
+    
+    def fillna(self, value: float = None, mean: bool = None, median: bool = None ) -> None:
+        """
+        Replaces all null values with another value or the
+        mean or median of the feature/variable.
+        """
+        
+        if value is not None:
+            self.X = np.where(np.isnan(self.X), value, self.X)
+
+        for i in range(self.X.shape[1]):
+            col= self.X[:,i]
+            if mean:
+                col_mean=np.nanmean(col)
+                self.X[:, i] = np.where(np.isnan(col), col_mean, col)
+            elif median:
+                col_median=np.nanmedian(col)
+                self.X[:, i] = np.where(np.isnan(col), col_median, col)
+
+        return self
+
+    def remove_by_index(self, index: int):
+        """
+        Removes a sample by its index
+        """
+
+        self.X = np.delete(self.X, index, 0)
+        
+        if self.y is not None:
+            self.y = np.delete(self.y, index, 0)
+
+        return self
+                
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
         """
@@ -200,7 +248,7 @@ class Dataset:
 
 
 if __name__ == '__main__':
-    X = np.array([[1, 2, 3], [4, 5, 6]])
+    X = np.array([[1, np.nan, 3], [4, 5, 6]])
     y = np.array([1, 2])
     features = np.array(['a', 'b', 'c'])
     label = 'y'
@@ -214,3 +262,5 @@ if __name__ == '__main__':
     print(dataset.get_min())
     print(dataset.get_max())
     print(dataset.summary())
+    dataset.dropna()
+    print(dataset.shape())
