@@ -126,7 +126,7 @@ class Dataset:
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
     
-    def dropna(self) -> None:
+    def dropna(self) -> 'Dataset':
         """
         Removes all samples containing at least one null value (NaN)
         """
@@ -142,7 +142,7 @@ class Dataset:
         
         return self
     
-    def fillna(self, value: float = None, mean: bool = None, median: bool = None ) -> None:
+    def fillna(self, value: float = None, mean: bool = None, median: bool = None ) -> 'Dataset':
         """
         Replaces all null values with another value or the
         mean or median of the feature/variable.
@@ -162,7 +162,7 @@ class Dataset:
 
         return self
 
-    def remove_by_index(self, index: int):
+    def remove_by_index(self, index: int) -> 'Dataset':
         """
         Removes a sample by its index
         """
