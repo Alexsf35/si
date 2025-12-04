@@ -60,7 +60,7 @@ class PCA(Transformer):
         eigen_values=eigen_values[sorted_i]
         eigen_vectors=eigen_vectors[:,sorted_i]
 
-        # cada linha é um componente (PC)
+        # cada coluna é um componente (PC)
         self.components= eigen_vectors[:,:self.n_components].T
 
         total_variance = np.sum(eigen_values)

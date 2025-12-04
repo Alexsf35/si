@@ -46,7 +46,7 @@ class KNNregressor(Model):
         self.dataset = None
 
 
-    def _fit(self, dataset: Dataset):
+    def _fit(self, dataset: Dataset) -> 'KNNregressor':
         """
         Store the training dataset.
 

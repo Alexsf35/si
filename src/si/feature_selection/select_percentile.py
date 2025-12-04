@@ -90,7 +90,7 @@ class SelectPercentile(Transformer):
 
         k = len(scores) - int((self.percentile*len(scores))/100)
 
-        features_i=sorted([score[1] for score in scores if score in scores[k:]])
+        features_i= sorted([index for score, index in scores[k:]])
 
         new_X=dataset.X[:,features_i]
         new_features=dataset.features[features_i]

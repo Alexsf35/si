@@ -136,10 +136,8 @@ class Dataset:
             if np.any(np.isnan(self.X[i])):
                 null_samples_i.append(i)
 
-        self.X = np.delete(self.X, null_samples_i,0)
-        if self.y is not None:
-            self.y = np.delete(self.y, null_samples_i,0)
-        
+        self.remove_by_index(null_samples_i)
+
         return self
     
     def fillna(self, value: float = None, mean: bool = None, median: bool = None ) -> 'Dataset':
