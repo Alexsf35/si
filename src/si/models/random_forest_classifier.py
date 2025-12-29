@@ -130,7 +130,7 @@ class RandomForestClassifier(Model):
         for features_i, tree in self.trees:
             dataset_sub = Dataset(dataset.X[:,features_i], y=None)
 
-            predictions= tree._predict(dataset_sub)
+            predictions= tree.predict(dataset_sub)
 
             all_predictions.append(predictions)
         
