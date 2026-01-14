@@ -141,3 +141,102 @@ class DenseLayer(Layer):
             The shape of the output of the layer.
         """
         return (self.n_units,) 
+    
+
+class Dropout(Layer):
+    """
+    Dropout layer.
+
+    Randomly sets a fraction of input units to 0 at each update during training,
+    which helps prevent overfitting.
+    """
+
+    def __init__(self, probability: float):
+        """
+        Initialize the Dropout layer.
+
+        Parameters
+        ----------
+        probability: float
+            Dropout rate (between 0 and 1)
+        """
+        if probability < 0 or probability >= 1:
+            raise ValueError("Dropout probability must be in the interval [0, 1)")
+        
+        self.probability = probability
+        self.mask = None
+        self.input = None
+        self.output = None
+
+    def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
+        """
+        Perform forward propagation.
+
+        Parameters
+        ----------
+        input: np.ndarray
+            Input array
+        training: bool
+            Whether the layer is in training mode
+
+        Returns
+        -------
+        np.ndarray
+            Output of the layer
+        """
+        self.input = input
+
+        if training:
+            # scaling factor
+            scale = 1 / (1 - self.probability)
+
+            # binomial mask
+            self.mask = np.random.binomial(
+                1,
+                1 - self.probability,
+                size=input.shape
+            )
+
+            self.output = input * self.mask * scale
+            return self.output
+        else:
+            # inference mode: do nothing
+            return input
+
+    def backward_propagation(self, output_error: np.ndarray) -> np.ndarray:
+        """
+        Perform backward propagation.
+
+        Parameters
+        ----------
+        output_error: np.ndarray
+            Error from the next layer
+
+        Returns
+        -------
+        np.ndarray
+            Propagated error
+        """
+        return output_error * self.mask
+
+    def output_shape(self) -> tuple:
+        """
+        Return output shape (same as input shape).
+
+        Returns
+        -------
+        tuple
+            Output shape
+        """
+        return self.input_shape()
+
+    def parameters(self) -> int:
+        """
+        Dropout has no trainable parameters.
+
+        Returns
+        -------
+        int
+            Number of parameters (0)
+        """
+        return 0
